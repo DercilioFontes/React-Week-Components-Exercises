@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@latest/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <link href="./style.css" rel="stylesheet"/>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Get It Done! <br/><small>For the truly industrious</small></h1>
+      <div id="root">
+        
+      </div>
+    </div>
+    <script src='./rando.js'></script>
+    <script src='./delay.js'></script>
+    <script src="./task-svc.js"></script>
+    <script type="text/babel">
+      const {
+        // Gets all current tasks.
+        // () => Promise<Tasks[]>
+        getTasks, 
+
+        // Creates a new task, adding an id and returning it.
+        // (taskName:String) => Promise<Task>
+        addTask, 
+
+        // Finds a task by id and switches its "finished" flag
+        // (id:String) => Promise<Task>
+        toggleTask,
+      } = taskSvc;
+
+      const root = document.getElementById('root');
+
+      // TYPE ANSWER HERE
+
+      function NewToDoForm({addToDo}) {
+
+        const onSubmit = (evt) => {
+          evt.preventDefault();
+          const taskInput = evt.target.elements.task;
+          addToDo(taskInput.value);
+          taskInput.value = '';
+        };
+
+        return (
+          <form onSubmit={onSubmit}>
+            <input type='text' name='task' placeholder="Write Task Name"/>
+            <button type='submit'>Add</button>
+          </form>);
+      }
+
+      function ToDoListItem({task, finished, toggleFinished, deleteToDoItem}) {
+        return (
+          <tr>
+            <td>{task}</td> 
+            <td><input type='checkbox' defaultChecked={finished} onChange={toggleFinished}/></td>
+            <td><button onClick={deleteToDoItem}>Delete</button></td>
+          </tr>
+        );
+      }
+
+      const ToDoListPresenter = (props) => {
+        if (props.loading) {
+            return (
+              <table>
+                <tbody>
+                <tr>
+                  <td colSpan='2'>Loading Tasks...</td>
+                </tr>
+                </tbody>
+              </table>);
+          }
+          
+          const ToDoListItems = props.tasks.map((ToDoItem) => {
+            return (<ToDoListItem 
+              key={ToDoItem.id}
+              task={ToDoItem.taskName} 
+              finished={ToDoItem.finished} 
+              deleteToDoItem={() => {
+                props.deleteToDoItem(ToDoItem.taskName);
+              }}
+              toggleFinished={() => {
+                props.toggleFinished(ToDoItem.id);
+              }}  
+              />);
+          });
+
+          return (
+              <table>
+                <thead>
+                  <tr><td>Task</td><td>Done?</td></tr>
+                </thead>
+                <tbody>
+                  {ToDoListItems}
+                </tbody>
+              </table>
+          );
+      
+      }
+
+
+      class ToDoList extends React.Component {
+
+        constructor(props) {
+          super(props);
+          this.state = { loading: true};
+          this.addToDo = this.addToDo.bind(this);
+          this.deleteToDoItem = this.deleteToDoItem.bind(this);
+          this.toogleFinished = this.toggleFinished.bind(this);
+        }
+
+        componentDidMount() {
+          getTasks()
+          .then((tasks) => {
+            this.setState({ tasks: tasks, loading: false});
+          });
+        }
+
+        addToDo(newToDoName) {
+          const oldToDoList = this.state.tasks;
+          const key = rando();
+          const newToDoList = oldToDoList.concat([{id: key, taskName: newToDoName, finished: false}]);
+          this.setState({tasks: newToDoList});
+        }
+
+        deleteToDoItem = (taskName) => {
+          this.setState({
+            tasks: this.state.tasks.filter(task => task.taskName !== taskName)
+          });
+        };
+
+        toggleFinished = (id) => {
+          // const oldToDoTask = this.state.tasks.bind(this);
+          // console.log(oldToDoTask);
+          this.setState({
+            tasks: this.state.tasks.map(task => {
+              if (task.id === id) {
+                task.finished = !task.finished;
+              }
+              return task;
+            })
+          });
+        }
+
+        render() {
+          return (
+            <div>
+              <ToDoListPresenter 
+              tasks={this.state.tasks}
+              loading={this.state.loading}
+              deleteToDoItem={this.deleteToDoItem.bind(this)}
+              toggleFinished={this.toggleFinished.bind(this)}
+              />
+              <hr />
+              < NewToDoForm addToDo={this.addToDo}/>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(
+      (<ToDoList/>),
+      root);
+
+    </script>
+  </body>
+</html>
