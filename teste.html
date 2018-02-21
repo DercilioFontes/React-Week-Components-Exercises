@@ -22,32 +22,48 @@
 
     // TYPE ANSWER HERE
 
-    // Need to be this way: checked={!!this.props.finished} - Reference: https://stackoverflow.com/questions/39120007/setting-a-checkbox-check-property-in-react
+    // const walkDog = (<ToDoListItem task='Walk Dog'/>);
+    // const buyBread = (<ToDoListItem task='Buy Bread'/>);
+
+    // class WalkDogTodoItem extends React.Component {
+    //   render() {
+    //     return (
+    //       <tr>
+    //         <td>Walk Dog</td><td><input type='checkbox' checked/></td>
+    //       </tr>
+    //     );
+    //   }
+    // }
+
+    // class BuyBreadTodoItem extends React.Component {
+    //   render() {
+    //     return (
+    //       <tr>
+    //         <td>Buy Bread</td><td><input type='checkbox'/></td>
+    //       </tr>
+    //     );
+    //   }
+    // }
+
     class ToDoListItem extends React.Component {
       render() {
         return (
           <tr>
-            <td>{this.props.task}</td>
-            
-            <td><input type='checkbox' checked={!!this.props.finished}/></td>
+            <td>{this.props.task}</td><td><input type='checkbox'/></td>
           </tr>
-          );
+        );    
       }
     }
-
-    const ToDoListItems = tasks.map((ToDoItem) => {
-      return (<ToDoListItem task={ToDoItem.taskName} finished={ToDoItem.finished}/>);
-    });
 
     class ToDoList extends React.Component {
       render() {
         return (
           <table>
           <thead>
-            <tr><td>Task</td><td>Done?</td></tr>
+            <ToDoListItem task='Walk Dog'/>
           </thead>
           <tbody>
-            {ToDoListItems}
+          
           </tbody>
         </table>
         );

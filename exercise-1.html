@@ -12,19 +12,7 @@
     <div class="container">
       <h1>Get It Done! <br/><small>For the truly industrious</small></h1>
       <div id="root">
-        <table>
-          <thead>
-            <tr><td>Task</td><td>Done?</td></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Walk Dog</td><td><input type='checkbox' checked/></td>
-            </tr>
-            <tr>
-              <td>Buy Bread</td><td><input type='checkbox'/></td>
-            </tr>
-          </tbody>
-        </table>
+        
       </div>
     </div>
     <script type="text/babel">
@@ -32,6 +20,46 @@
     const root = document.getElementById('root');
     
     // TYPE ANSWER HERE
+    class WalkDogTodoItem extends React.Component {
+      render() {
+        return (
+          <tr>
+            <td>Walk Dog</td><td><input type='checkbox' checked/></td>
+          </tr>
+        );
+      }
+    }
+
+    class BuyBreadTodoItem extends React.Component {
+      render() {
+        return (
+          <tr>
+            <td>Buy Bread</td><td><input type='checkbox'/></td>
+          </tr>
+        );
+      }
+    }
+
+    class ToDoList extends React.Component {
+      render() {
+        return (
+          <table>
+          <thead>
+            <tr><td>Task</td><td>Done?</td></tr>
+          </thead>
+          <tbody>
+            <WalkDogTodoItem/>
+            <BuyBreadTodoItem/>
+          </tbody>
+        </table>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      (<ToDoList/>),
+      root);
+
     </script>
   </body>
 </html>
